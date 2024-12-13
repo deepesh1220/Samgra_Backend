@@ -12,7 +12,7 @@ const {
   changePasswordByOtp,
   updateRole,
   logout,
-  protectedRoute,
+//  protectedRoute,
   editUser,
   deleteUser,
   registerUserByAdmin,
@@ -47,7 +47,7 @@ router.post('/change-password-by-otp', changePasswordByOtp);
 
 router.put('/update-role', authenticateToken, updateRole);
 
-router.get('/protected', authenticateToken, protectedRoute);
+// router.get('/protected', authenticateToken, protectedRoute);
 
 router.put('/edit-user', authenticateToken, editUser);
 router.delete('/delete-user', authenticateToken, deleteUser); 

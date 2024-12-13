@@ -4,9 +4,12 @@ const cors = require('cors');
 const path = require('path');
 const config = require('./config/config');
 const Router = require('./routes/router');
+const errorHandler = require('./middleware/errorHandler');
 const app = express();
 
-const connectDB = require('./config/db');
+
+const {connectDB} = require('./config/db');
+const CustomError = require('./utils/customError');
 dotenv.config();
 connectDB();
 // CORS handle
@@ -27,7 +30,8 @@ app.use(cors());
 
 // Middleware for parsing JSON
 app.use(express.json());
-
+//app.use(CustomError)
+app.use(errorHandler);
 
 // Routes
 app.use('/api',Router)

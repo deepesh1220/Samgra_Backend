@@ -8,7 +8,7 @@ module.exports = {
     host: process.env.DB_HOST,
     dialect: 'postgres',
     port: process.env.DB_PORT,
-    logging: false, // Disable logging for cleaner console output
+    logging: false, 
   }),
   jwtSecret: 'your_jwt_secret_key',
   smtp: {

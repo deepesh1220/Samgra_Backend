@@ -59,9 +59,17 @@ const User = sequelize.define('User', {
     type: DataTypes.ENUM('superAdmin', 'admin', 'subAdmin', 'user'),
     defaultValue: 'user',
   },
+  roleId: {
+    type: DataTypes.INTEGER, 
+    allowNull: true,
+  },
   userLevel: {
     type: DataTypes.ENUM('state', 'district', 'block', 'cluster', 'school', 'other'),
     defaultValue: 'other',
+  },
+  userLevelId: {
+    type: DataTypes.INTEGER, 
+    allowNull: true,
   },
   accessId: {
     type: DataTypes.ENUM('1', '2', '3', '4'),
