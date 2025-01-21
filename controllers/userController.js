@@ -582,9 +582,6 @@ const login = async (req, res, next) => {
         sch_category_id: user.sch_category_id,
         sch_type: user.sch_type,
         sch_mgmt_id: user.sch_mgmt_id,
-        pmshri_sages: user.pmshri_sages,
-        class_frm: user.class_frm,
-        class_to: user.class_to,
         latitude: user.latitude,
         longitude: user.longitude,
       };
@@ -654,7 +651,6 @@ const changePassword = async (req, res, next) => {
     //   throw new customError('Password or new password is null. Please provide valid values.', 401);
     // }
     
-
     user.password = await bcrypt.hash(newPassword, 10);
     await user.save();
 
@@ -668,6 +664,72 @@ const changePassword = async (req, res, next) => {
   //  res.status(500).json({ message: error.message });
   }
 };
+
+// change password filed of all
+// const changePassword = async (req, res, next) => {
+//   const { oldPassword, newPassword, loginField } = req.body; // `loginField` determines which field was used to log in
+//   const userId = req.user?.id; // `req.user` should contain the logged-in user info, depending on your auth middleware
+
+//   try {
+//     let user;
+
+//     // Check if the user logged in via the `users` table
+//     if (loginField === 'email' && userId) {
+//       user = await User.findByPk(userId);
+//       if (!user) {
+//         throw new customError('User not found', 404);
+//       }
+
+//       const isMatch = await bcrypt.compare(oldPassword, user.password);
+//       if (!isMatch) {
+//         throw new customError('Old password is incorrect', 401);
+//       }
+
+//       // Update password for the `users` table
+//       user.password = await bcrypt.hash(newPassword, 10);
+//       await user.save();
+
+//       return successResponse(res, 200, 'Password updated successfully for user');
+//     }
+
+//     // Check if the user logged in via the `school_udise` table
+//     const loginConditions = [
+//       { field: 'udise_sch_code', value: req.body.udise_sch_code },
+//       { field: 'district_cd', value: req.body.district_cd },
+//       { field: 'block_cd', value: req.body.block_cd },
+//       { field: 'cluster_cd', value: req.body.cluster_cd },
+//       { field: 'mobileNo', value: req.body.mobileNo },
+//     ];
+
+//     for (const condition of loginConditions) {
+//       if (condition.value) {
+//         user = await SchoolUdise.findOne({
+//           where: { [condition.field]: condition.value },
+//         });
+//         if (user) {
+//           if (oldPassword !== condition.value.toString()) {
+//             throw new customError('Old password is incorrect', 401);
+//           }
+
+//           // Update password logic for `school_udise`
+//           user.password = await bcrypt.hash(newPassword, 10); // If `password` field is not present in the `school_udise` table, use the relevant field for update.
+//           await user.save();
+
+//           return successResponse(res, 200, 'Password updated successfully for school_udise');
+//         }
+//       }
+//     }
+
+//     throw new customError('User not found or invalid login field provided', 404);
+//   } catch (error) {
+//     if (error instanceof customError) {
+//       return error.sendErrorResponse(res);
+//     }
+//     const genericError = new customError('An unexpected error occurred', 500);
+//     return genericError.sendErrorResponse(res);
+//   }
+// };
+
 
 const forgotPassword = async (req, res, next) => {
   const { email } = req.body;

@@ -7,7 +7,6 @@ class CustomError extends Error {
     Error.captureStackTrace(this, this.constructor);
   }
 
-  // Method to send the error response in a consistent format
   sendErrorResponse(res) {
     return res.status(this.statusCode).json({
       success: this.success,

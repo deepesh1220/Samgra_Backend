@@ -29,7 +29,7 @@ router.post('/refresh-token', authenticateRefreshToken, (req, res) => {
 
   const user = req.user;
   const newAccessToken = jwt.sign({ id: user.id, email: user.email, role: user.role }, jwtSecret, {
-    expiresIn: '15m',
+    // expiresIn: '15m',
   });
 
   res.status(200).json({

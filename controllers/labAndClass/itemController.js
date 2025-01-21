@@ -1,5 +1,6 @@
 const express = require('express');
 const Item = require('../../models/labAndClass/item')
+const SubItem = require('../../models/labAndClass/subItem')
 const { sequelize } = require('../../config/db');
 const successResponse = require('../../utils/successResponse')
 const customError = require('../../utils/customError');
@@ -14,7 +15,11 @@ const getItemList = async(req,res,next)=>{
         data: items,
       }) 
   }catch(error){
-
+    if (error instanceof customError) {
+      return error.sendErrorResponse(res);
+    }
+    const genericError = new customError();
+    return genericError.sendErrorResponse(res);
   }
 }
 
@@ -161,6 +166,132 @@ const deleteItem = async (req, res) => {
   }
 };
 
+// ***For mst_sub_item***
+const addSubItem = async (req, res) => {
+  try {
+    const { itemId, subItemName, description, status } = req.body;
+
+    if (!itemId || !subItemName || !status) {
+      throw new customError('All required fields must be provided', 401);
+    }
+
+    const itemExists = await Item.findByPk(itemId);
+    if (!itemExists) {
+      throw new customError('Referenced item not found', 404);
+    }
+
+    const newSubItem = await SubItem.create({
+      itemId,
+      subItemName,
+      description,
+      status,
+    });
+
+    return successResponse(res, 201, 'Sub-item successfully added!', newSubItem);
+  } catch (error) {
+    if (error instanceof customError) {
+      return error.sendErrorResponse(res);
+    }
+    const genericError = new customError();
+    return genericError.sendErrorResponse(res);
+  }
+};
+
+const getSubItems = async (req, res) => {
+  try {
+    const subItems = await SubItem.findAll({
+      include: {
+        model: Item,
+        as: 'item', 
+        attributes: ['itemName', 'itemType'], 
+      },
+    });
+
+    if (!subItems || subItems.length === 0) {
+      throw new customError('No sub-items found', 404);
+    }
+
+    return successResponse(res, 200, 'Sub-items successfully fetched!', subItems);
+  } catch (error) {
+    if (error instanceof customError) {
+      return error.sendErrorResponse(res);
+    }
+    const genericError = new customError();
+    return genericError.sendErrorResponse(res);
+  }
+};
+
+const getSubItemsByItemId = async (req, res) => {
+  try {
+    const { itemId } = req.body;
+
+    const subItems = await SubItem.findAll({
+      where: { itemId },
+      include: {
+        model: Item,
+        as: 'item',
+        attributes: ['itemName', 'itemType'],
+      },
+    });
+
+    if (!subItems || subItems.length === 0) {
+      throw new customError('No sub-items found for the given item ID', 404);
+    }
+
+    return successResponse(res, 200, 'Sub-items successfully fetched!', subItems);
+  } catch (error) {
+    if (error instanceof customError) {
+      return error.sendErrorResponse(res);
+    }
+    const genericError = new customError();
+    return genericError.sendErrorResponse(res);
+  }
+};
+
+const updateSubItem = async (req, res) => {
+  try {
+    const { subItemId } = req.body;
+    const { subItemName, description, status } = req.body;
+
+    const updated = await SubItem.update(
+      { subItemName, description, status },
+      { where: { subItemId: subItemId } }
+    );
+
+    if (!updated[0]) {
+      throw new customError('Sub-item not found or no changes made', 404);
+    }
+
+    return successResponse(res, 200, 'Sub-item successfully updated!');
+  } catch (error) {
+    if (error instanceof customError) {
+      return error.sendErrorResponse(res);
+    }
+    const genericError = new customError();
+    return genericError.sendErrorResponse(res);
+  }
+};
+
+const deleteSubItem = async (req, res) => {
+  try {
+    const { subItemId } = req.body;
+
+    const deleted = await SubItem.destroy({ where: { subItemId: subItemId } });
+
+    if (!deleted) {
+      throw new customError('Sub-item not found', 404);
+    }
+
+    return successResponse(res, 200, 'Sub-item successfully deleted!');
+  } catch (error) {
+    if (error instanceof customError) {
+      return error.sendErrorResponse(res);
+    }
+    const genericError = new customError();
+    return genericError.sendErrorResponse(res);
+  }
+};
+
 module.exports = {
   addItem,
   getItems,
@@ -168,6 +299,13 @@ module.exports = {
   getItemByictOrScId,
   updateItem,
   deleteItem,
-  getItemList
+  getItemList,
+
+   //for mst_sub_item
+   addSubItem,
+   getSubItems,
+   getSubItemsByItemId,
+   updateSubItem,
+   deleteSubItem,
 };
 

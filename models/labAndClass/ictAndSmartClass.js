@@ -1,6 +1,9 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../config/config');
 
+// imp note => used in database 1 = yes , 2 = no 
+
+
 const ictAndSmartClass = sequelize.define('ictAndSmartClass',{
     Id: {
         type: DataTypes.INTEGER,
@@ -12,8 +15,8 @@ const ictAndSmartClass = sequelize.define('ictAndSmartClass',{
         allowNull: false,
       },
       sectionId: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
+        type: DataTypes.INTEGER,   // ICT lab = 1 , Smart Class = 2
+        allowNull: false,       
       },
       itemId: {
         type: DataTypes.INTEGER,
@@ -43,6 +46,22 @@ const ictAndSmartClass = sequelize.define('ictAndSmartClass',{
         type: DataTypes.INTEGER,
         allowNull: true,
       },
+      workingQty:{
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      usedPlace:{
+        type: DataTypes.ENUM('classroom', 'other-place'),
+        allowNull: true,
+      },
+      notWorkingQty:{
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+      notWorkingReason:{
+        type: DataTypes.ENUM('damaged','repairable','theft'),
+        allowNull: true,
+      },    
       session:{
       type: DataTypes.INTEGER,
       allowNull: false,

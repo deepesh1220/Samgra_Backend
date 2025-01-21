@@ -7,6 +7,7 @@ const {
     getById,
     getByUdise,
     updateForm,
+    updateByUdiseId,
     deleteForm,
 } = require('../../controllers/labAndClass/ictAndSmartClassController');
 
@@ -15,6 +16,7 @@ router.get('/get', getForm);
 router.get('/get/:id',getById);
 router.post('/get-by-udise',getByUdise);
 router.put('/update/:id', updateForm);
-router.delete('/delete/:id', deleteForm);
+router.put('/update-by-udise/:id',updateByUdiseId);
+router.delete('/delete/:id', deleteForm);   
 
 module.exports = router;
